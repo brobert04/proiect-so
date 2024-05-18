@@ -10,6 +10,10 @@ function check_csv(){
     fi
 }
 
+function generate_salt() {
+    openssl rand -base64 6
+}
+
 function register_user() {
     check_csv
     while true; do
@@ -40,6 +44,9 @@ function register_user() {
         done
         echo ""
 
+        salt=$(generate_salt)
+        encrypted_password=$(openssl passwd -6 -salt "$salt" "$password")
+
         user_id=$(date +%s)
         last_login="null"
 
@@ -53,7 +60,7 @@ function register_user() {
     done
     mkdir -p "$home_directory"
     
-    echo "$username $user_id $email $password $last_login" >> "$USER_FILE"
+    echo "$username $user_id $email $encrypted_password $last_login" >> "$USER_FILE"
     echo "Utilizator înregistrat cu succes!"
     echo ""
 }
@@ -65,7 +72,13 @@ function login_user() {
 
     if grep -q "^$username " "$USER_FILE"; then
         stored_password=$(grep "^$username " "$USER_FILE" | awk '{print $4}')
-        if [[ "$password" == "$stored_password" ]]; then
+
+
+        stored_salt=$(echo "$stored_password" | cut -d'$' -f3)
+        encrypted_input=$(openssl passwd -6 -salt "$stored_salt" "$password")
+        
+
+        if [[ "$encrypted_input" == "$stored_password" ]]; then
             last_login=$(date)
 
             home_dir="./home/$username"
@@ -184,3 +197,14 @@ while true; do
             ;;
     esac
 done
+
+
+# The issue with your password encryption is that openssl passwd -1 generates a new salt each time it is called, resulting in different hashed values even for the same input password. This behavior makes it impossible to compare the stored hash with the hash of the entered password correctly.
+
+# To fix this, you should use a consistent hashing method that allows verifying passwords against stored hashes. A common choice is openssl passwd -6 for SHA-512, which provides an option to specify a salt.
+
+# Here's how you can modify your script to use a consistent salt for hashing passwords and verifying them correctly:
+
+# Store the salt with the hash when registering a user.
+# Extract the salt from the stored hash when verifying a password during login.
+# Here is the updated script:
