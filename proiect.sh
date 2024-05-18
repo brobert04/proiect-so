@@ -3,7 +3,15 @@
 USER_FILE="utilizatori.csv"
 logged_in_users=()
 
+function check_csv(){
+    if [[ ! -f "$USER_FILE" ]]; then
+        touch "$USER_FILE"
+        echo "Fisierul a fost creat cu succes!"
+    fi
+}
+
 function register_user() {
+    check_csv
     while true; do
         read -p "Nume utilizator: " username
 
@@ -60,10 +68,17 @@ function login_user() {
         if [[ "$password" == "$stored_password" ]]; then
             last_login=$(date)
 
+            home_dir="./home/$username"
+            if [[ ! -d "$home_dir" ]]; then
+                mkdir -p "$home_dir"
+                echo "Directorul home a fost creat pentru $username."
+            fi
+
             sed -i "/^$username / s/^\([^ ]*\) \([^ ]*\) \([^ ]*\) \([^ ]*\) \([^.]*\)/\1 \2 \3 \4 $last_login/" "$USER_FILE"
             logged_in_users+=("$username")
+
             echo "Bun venit, $username!"
-            cd "./home/$username" || echo "Directorul home nu a putut fi accesat!"
+            cd "$home_dir" || echo "Directorul home nu a putut fi accesat!"
         else
             echo "Parola este incorectă!"
         fi
@@ -97,9 +112,27 @@ function logout_user() {
 }
 
 function generate_report() {
-    echo "Generare raport..."
-    # Add your report generation logic here
-    echo "Raport generat."
+    read -p "Nume utilizator: " username
+    if grep -q "^$username " "$USER_FILE"; then
+        home_dir="./home/$username"
+        if [[ -d "$home_dir" ]]; then
+        ( 
+            num_files=$(find "$home_dir" -type f | wc -l)
+            num_dirs=$(find "$home_dir" -mindepth 1 -type d | wc -l)
+            size_kb=$(du -sk "$home_dir" | cut -f1)
+            echo "Raport pentru $username:" > "$home_dir/report.txt"
+            echo "Fișiere: $num_files" >> "$home_dir/report.txt"
+            echo "Directoare: $num_dirs" >> "$home_dir/report.txt"
+            echo "Dimensiune: $size_kb KB" >> "$home_dir/report.txt"
+        ) &
+        echo "Generarea raportului a început. Acesta va fi disponibil în $home_dir/report.txt"
+        else
+            echo "Directorul home al utilizatorului \"$username\" nu există!"
+        fi
+    else
+        echo "Utilizatorul \"$username\" nu există!"
+        return
+    fi
 }
 
 while true; do
@@ -107,10 +140,10 @@ while true; do
     if [[ ${#logged_in_users[@]} -eq 0 ]]; then
         echo "1. Înregistrare utilizator"
         echo "2. Autentificare"
+        echo "4. Generare raport"
     else
         echo "3. Logout"
     fi
-    echo "4. Generare raport"
     echo "5. Ieșire"
     read -p "Alegeți o opțiune: " choice
 
@@ -137,7 +170,11 @@ while true; do
             fi
             ;;
         4)
-            generate_report
+            if [[ ${#logged_in_users[@]} -eq 0 ]]; then
+                generate_report
+            else
+                echo "Nu poți genera un raport daca esti autentificat."
+            fi
             ;;
         5)
             break
