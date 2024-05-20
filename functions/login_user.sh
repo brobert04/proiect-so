@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function login_user() {
+login_user() {
     read -p "Nume utilizator: " username
     read -s -p "Parola: " password
     echo ""

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function register_user() {
+register_user() {
     check_csv
     while true; do
         read -p "Nume utilizator: " username

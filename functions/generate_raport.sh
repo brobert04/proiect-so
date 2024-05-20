@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function generate_report() {
+generate_report() {
     read -p "Nume utilizator: " username
     if user_exists "$username"; then
         home_dir="./home/$username"

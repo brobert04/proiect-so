@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function logout_user() {
+logout_user() {
     if [[ ${#logged_in_users[@]} -gt 0 ]]; then
         username="${logged_in_users[0]}"
         logged_in_users=("${logged_in_users[@]/$username}")
