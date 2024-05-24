@@ -47,7 +47,7 @@ register_user() {
 
     create_home_directory "$username"
     
-    echo "$username $user_id $email $encrypted_password $last_login" >> "$USER_FILE"
+    echo "$username,$user_id,$email,$encrypted_password,$last_login" >> "$USER_FILE"
     echo "Utilizator înregistrat cu succes!"
     echo ""
 }

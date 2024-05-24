@@ -1,10 +1,10 @@
 #!/bin/bash
 
 source ./helpers/helpers.sh
-source ./ s/register_user.sh
-source ./ s/login_user.sh
-source ./ s/logout_user.sh
-source ./ s/generate_raport.sh
+source ./functions/register_user.sh
+source ./functions/login_user.sh
+source ./functions/logout_user.sh
+source ./functions/generate_raport.sh
 
 while true; do
     echo "Alege o optiune:"

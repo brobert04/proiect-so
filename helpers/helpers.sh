@@ -6,6 +6,7 @@ logged_in_users=()
 check_csv(){
     if [[ ! -f "$USER_FILE" ]]; then
         touch "$USER_FILE"
+        echo "nume,id,email,parola,last_login" > "$USER_FILE"
         echo "Fisierul a fost creat cu succes!"
     fi
 }
@@ -28,13 +29,13 @@ is_valid_password() {
 
 user_exists() {
     local username="$1"
-    grep -q "^$username " "$USER_FILE"
+    grep -q "^$username," "$USER_FILE"
 }
 
 get_user_field() {
     local username="$1"
     local field="$2"
-    grep "^$username " "$USER_FILE" | awk "{print \$$field}"
+    awk -F, -v user="$username" -v fld="$field" '$1 == user {print $fld}' "$USER_FILE"
 }
 
 create_home_directory() {

@@ -12,7 +12,8 @@ login_user() {
         encrypted_input=$(openssl passwd -6 -salt "$stored_salt" "$password")
         
         if [[ "$encrypted_input" == "$stored_password" ]]; then
-            last_login=$(date)
+            
+            last_login=$(date +"%Y-%m-%d %H:%M:%S")
 
             home_dir="./home/$username"
             if [[ ! -d "$home_dir" ]]; then
@@ -20,7 +21,13 @@ login_user() {
                 echo "Directorul home a fost creat pentru $username."
             fi
 
-            sed -i "/^$username / s/^\([^ ]*\) \([^ ]*\) \([^ ]*\) \([^ ]*\) \([^.]*\)/\1 \2 \3 \4 $last_login/" "$USER_FILE"
+            awk -F, -v user="$username" -v date="$last_login" -v OFS=, '{
+                if ($1 == user) {
+                    $5 = "\""date"\""
+                }
+                print
+            }' "$USER_FILE" > tmp && mv tmp "$USER_FILE"
+            
             logged_in_users+=("$username")
 
             echo "Bun venit, $username!"
