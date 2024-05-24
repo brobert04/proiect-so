@@ -29,6 +29,7 @@ login_user() {
             }' "$USER_FILE" > tmp && mv tmp "$USER_FILE"
             
             logged_in_users+=("$username")
+            update_logged_in_users
 
             echo "Bun venit, $username!"
             cd "$home_dir" || echo "Directorul home nu a putut fi accesat!"

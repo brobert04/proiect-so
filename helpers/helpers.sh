@@ -55,3 +55,11 @@ remove_empty_elements() {
     done
     logged_in_users=("${new_array[@]}")
 }
+
+update_logged_in_users() {
+    local temp_file=$(mktemp)
+    printf "%s\n" "${logged_in_users[@]}" > "$temp_file"
+    flock -x 200
+    logged_in_users=($(cat "$temp_file"))
+    rm "$temp_file"
+}
