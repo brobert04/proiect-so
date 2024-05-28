@@ -5,6 +5,7 @@ source ./functions/register_user.sh
 source ./functions/login_user.sh
 source ./functions/logout_user.sh
 source ./functions/generate_raport.sh
+source ./functions/todo.sh
 
 check_csv  
 check_logged_in_users_file  
@@ -22,9 +23,11 @@ while true; do
         current_user=$(head -n 1 "$LOGGED_IN_USERS_FILE")
         if check_role "$current_user" "admin"; then
             echo "* 4. Generare raport                 *"
+        else
+            echo "* 5. TODO                            *"
         fi
     fi
-    echo "* 5. Ieșire                          *"
+    echo "* 6. Ieșire                          *"
     echo "**************************************"
 
     read -p "Alegeți o opțiune: " choice
@@ -59,7 +62,10 @@ while true; do
                 echo "Nu există utilizatori autentificați."
             fi
             ;;
-        5)
+        5) 
+            show_menu
+            ;;
+        6)
             break
             ;;
         *)

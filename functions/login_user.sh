@@ -24,8 +24,7 @@ login_user() {
                 }
                 print
             }' "$USER_FILE" > tmp && mv tmp "$USER_FILE"
-            
-            # Adăugăm utilizatorul în fișierul logged_in_users.txt doar dacă nu există deja
+
             if ! grep -q "^$username$" "logged_in_users.txt"; then
                 echo "$username" >> "logged_in_users.txt"
             fi
