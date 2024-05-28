@@ -28,7 +28,8 @@ register_user() {
                 echo "Parola trebuie să aibă cel puțin 8 caractere și să fie diferită de numele de utilizator."
             fi
         done
-        echo ""
+       
+        role="user"
 
         salt=$(generate_salt)
         encrypted_password=$(openssl passwd -6 -salt "$salt" "$password")
@@ -47,7 +48,7 @@ register_user() {
 
     create_home_directory "$username"
     
-    echo "$username,$user_id,$email,$encrypted_password,$last_login" >> "$USER_FILE"
+    echo "$username,$user_id,$email,$encrypted_password,$last_login,$role" >> "$USER_FILE"
     echo "Utilizator înregistrat cu succes!"
     echo ""
 }

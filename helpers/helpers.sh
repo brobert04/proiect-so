@@ -1,13 +1,21 @@
 #!/bin/bash
 
-USER_FILE="utilizatori.csv"
-logged_in_users=()
+USER_FILE="$(pwd)/utilizatori.csv"
+LOGGED_IN_USERS_FILE="$(pwd)/logged_in_users.txt"
 
-check_csv(){
+check_csv() {
     if [[ ! -f "$USER_FILE" ]]; then
         touch "$USER_FILE"
-        echo "nume,id,email,parola,last_login" > "$USER_FILE"
-        echo "Fisierul a fost creat cu succes!"
+        echo "nume,id,email,parola,last_login,rol" > "$USER_FILE"
+        admin_password=$(openssl passwd -6 -salt "$(openssl rand -base64 6)" "admin123")
+        echo "admin,1,admin@example.com,$admin_password,null,admin" >> "$USER_FILE"
+        mkdir -p "$(pwd)/home/admin"
+    fi
+}
+
+check_logged_in_users_file() {
+    if [[ ! -f "$LOGGED_IN_USERS_FILE" ]]; then
+        touch "$LOGGED_IN_USERS_FILE"
     fi
 }
 
@@ -56,10 +64,12 @@ remove_empty_elements() {
     logged_in_users=("${new_array[@]}")
 }
 
-update_logged_in_users() {
-    local temp_file=$(mktemp)
-    printf "%s\n" "${logged_in_users[@]}" > "$temp_file"
-    flock -x 200
-    logged_in_users=($(cat "$temp_file"))
-    rm "$temp_file"
+check_role() {
+    local username="$1"
+    local required_role="$2"
+    user_role=$(get_user_field "$username" 6)
+    if [[ "$user_role" != "$required_role" ]]; then
+        return 1
+    fi
+    return 0
 }

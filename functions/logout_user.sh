@@ -1,25 +1,19 @@
 #!/bin/bash
 
 logout_user() {
-    if [[ ${#logged_in_users[@]} -gt 0 ]]; then
-        # Găsește indexul utilizatorului curent în array
-        for i in "${!logged_in_users[@]}"; do
-            if [[ "${logged_in_users[i]}" == "$username" ]]; then
-                index=$i
-                break
-            fi
-        done
+    if [[ -f "$LOGGED_IN_USERS_FILE" ]]; then
+        if [[ -s "$LOGGED_IN_USERS_FILE" ]]; then  # Verifică dacă fișierul nu este gol
+            current_user=$(head -n 1 "$LOGGED_IN_USERS_FILE")
 
-        # Elimină utilizatorul de la indexul găsit
-        unset logged_in_users[$index]
-        logged_in_users=("${logged_in_users[@]}")  # Reindexează array-ul
+            # Folosește sed pentru a elimina linia cu numele utilizatorului
+            sed -i "/^$current_user$/d" "$LOGGED_IN_USERS_FILE"
 
-        # Actualizează fișierul temporar și array-ul local
-        update_logged_in_users
-
-        echo "$username a fost delogat."
-        cd "../.." || echo "Directorul home nu a putut fi accesat!"
+            echo "$current_user a fost delogat."
+            cd "../.." || echo "Eroare: Directorul home nu a putut fi accesat!" 
+        else
+            echo "Nu există utilizatori autentificați."
+        fi
     else
-        echo "Nu există utilizatori autentificați."
+        echo "Fișierul cu utilizatori autentificați nu există." 
     fi
 }

@@ -1,9 +1,10 @@
 #!/bin/bash
 
 generate_report() {
+
     read -p "Nume utilizator: " username
     if user_exists "$username"; then
-        home_dir="./home/$username"
+        home_dir="../$username"
         if [[ -d "$home_dir" ]]; then
         ( 
             num_files=$(find "$home_dir" -type f | wc -l)

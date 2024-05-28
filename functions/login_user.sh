@@ -5,16 +5,13 @@ login_user() {
     read -s -p "Parola: " password
     echo ""
 
-     if user_exists "$username"; then
+    if user_exists "$username"; then
         stored_password=$(get_user_field "$username" 4)
-
         stored_salt=$(echo "$stored_password" | cut -d'$' -f3)
         encrypted_input=$(openssl passwd -6 -salt "$stored_salt" "$password")
         
         if [[ "$encrypted_input" == "$stored_password" ]]; then
-            
             last_login=$(date +"%Y-%m-%d %H:%M:%S")
-
             home_dir="./home/$username"
             if [[ ! -d "$home_dir" ]]; then
                 create_home_directory "$username"
@@ -28,8 +25,10 @@ login_user() {
                 print
             }' "$USER_FILE" > tmp && mv tmp "$USER_FILE"
             
-            logged_in_users+=("$username")
-            update_logged_in_users
+            # Adăugăm utilizatorul în fișierul logged_in_users.txt doar dacă nu există deja
+            if ! grep -q "^$username$" "logged_in_users.txt"; then
+                echo "$username" >> "logged_in_users.txt"
+            fi
 
             echo "Bun venit, $username!"
             cd "$home_dir" || echo "Directorul home nu a putut fi accesat!"
