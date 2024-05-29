@@ -2,10 +2,10 @@
 
 logout_user() {
     if [[ -f "$LOGGED_IN_USERS_FILE" ]]; then
-        if [[ -s "$LOGGED_IN_USERS_FILE" ]]; then  # Verifică dacă fișierul nu este gol
+        if [[ -s "$LOGGED_IN_USERS_FILE" ]]; then 
             current_user=$(head -n 1 "$LOGGED_IN_USERS_FILE")
 
-            # Folosește sed pentru a elimina linia cu numele utilizatorului
+           
             sed -i "/^$current_user$/d" "$LOGGED_IN_USERS_FILE"
 
             echo "$current_user a fost delogat."
