@@ -6,6 +6,9 @@ source ./functions/login_user.sh
 source ./functions/logout_user.sh
 source ./functions/generate_raport.sh
 source ./functions/todo.sh
+source ./functions/open_terminal.sh
+source ./functions/delete_user.sh
+source ./functions/forget_password.sh
 
 check_csv  
 check_logged_in_users_file  
@@ -23,13 +26,14 @@ while true; do
         current_user=$(head -n 1 "$LOGGED_IN_USERS_FILE")
         if check_role "$current_user" "admin"; then
             echo "* 4. Generare raport                 *"
+            echo "* 5. Sterge utilizator               *"
         else
-            echo "* 5. TODO                            *"
+            echo "* 6. TODO                            *"
         fi
+        echo "* 7. Deschide terminal               *"
     fi
-    echo "* 6. Ieșire                          *"
+    echo "* 8. Ieșire                          *"
     echo "**************************************"
-
     read -p "Alegeți o opțiune: " choice
 
     case $choice in
@@ -62,12 +66,36 @@ while true; do
                 echo "Nu există utilizatori autentificați."
             fi
             ;;
-        5) 
-            show_menu
+        5)
+            if [[ $(wc -l < "$LOGGED_IN_USERS_FILE") -gt 0 ]]; then
+                current_user=$(head -n 1 "$LOGGED_IN_USERS_FILE")
+                if check_role "$current_user" "admin"; then
+                    delete_user
+                else
+                    echo "Nu ai permisiunea de a sterge utilizatori."
+                fi
+            else
+                echo "Nu există utilizatori autentificați."
+            fi
             ;;
-        6)
+        6) 
+           if [[ $(wc -l < "$LOGGED_IN_USERS_FILE") -gt 0 ]]; then
+                show_menu
+            else
+                echo "Nu există utilizatori autentificați."
+            fi
+            ;;
+        7)
+            if [[ $(wc -l < "$LOGGED_IN_USERS_FILE") -gt 0 ]]; then
+                open_terminal
+            else
+                echo "Nu există utilizatori autentificați."
+            fi
+            ;;
+        8)
             break
             ;;
+       
         *)
             echo "Opțiune invalidă!"
             ;;

@@ -1,6 +1,0 @@
-nume,id,email,parola,last_login,rol
-admin,1,admin@example.com,$6$jAD4aYe5$fupWNa7HzEOt52nrP9zNEG.p1Hx8NUI4Wgm.9UOiEaU23UBplwn4aTCnJn27jv0LkQBtqUBdcnHC7h.nrRkRH1,null,admin
-rober,1716927009,robert@email.com,$6$5EOAnI8p$FPEwc4vODmOw9yMYWUXWz5wrnk0DDIiQkeQE4sXa7s5QGqVLyD6oGvLglryQqR2WFVmAdAyxOfh7HC93oegiz0,null,user
-antonia,1716927144,antonia@email.com,$6$Wrl9dXbB$.IjQDYe.tiVpswyNEkZ27B2Z/tO.ytZWwrOTOxayCcDHNMtLBlXDllitJ799YHddKHvrKjXgWB7gNpKCx0irB/,"2024-05-28 23:19:41",user
-florin,1716927380,florin@email.com,$6$c3sU7Bqa$eZXAVea/6A0nnJ4.7/asQWf/LXEaMYnV9K4iO5YQkBK8SCVU4eN4GhlqGUCvR/w6V.V.IdETvoujqNBPutcr/1,null,user
-flavius,1716927404,flavius@email.com,$6$lPSkRcVi$HdYfsMghbRjfLa1wT5NgHSs.Ew0dA8PmYXEW5bxXi194T8T4vuNxiQzWCd/7eXC78AGrIFPiDwaMKMN0aNb5D0,"2024-05-28 23:16:53",user
